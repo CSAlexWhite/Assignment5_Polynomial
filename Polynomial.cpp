@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
-#include <cstring>
 #include <string>
+#include <sstream>
 using namespace std;
 
 class Term{
@@ -19,6 +19,11 @@ public:
 		exponent{ e },
 		next{ nullptr }
 	{}
+
+	void invert()
+	{
+		coefficient *= -1;
+	}
 
 	Term& operator=(const Term input){
 
@@ -60,7 +65,9 @@ ostream& operator<< (ostream& os, Term t){
 
 	switch (t.coefficient)
 	{
-		case 0: return os;
+		case 0: 
+			
+			return os;
 
 case_1:
 		case 1:
@@ -99,16 +106,43 @@ public:
 		size = 0;
 	}
 
+	Polynomial(string input)
+	{
+		head = new Term();
+		(*head).next = NULL;
+		size = 0;
+		
+		cout << "Converstion Construction Activated on " << input << endl;
+
+		stringstream stream(input);
+
+		int c, e;
+		while (stream) {
+			stream >> c;
+			if (!stream) break;
+			stream >> e;
+			cout << "c:" << c << " e:" << e << endl;
+			insert(c, e);
+		}
+	}
+
+	Polynomial(const Polynomial& source) 
+	{
+
+
+	}
+
 /*	~Polynomial(){
 
-		Term *to_delete, *next;
-		to_delete = head;
+		Term* current;
+		Term* temp;
+		current = head;
 
-		while (to_delete){
+		while (current->next){
 
-			next = to_delete->next;
-			delete to_delete;
-			to_delete = next;
+			temp = current->next;
+			current->next = current->next->next;
+			delete temp;
 		}
 	}*/
 
@@ -117,20 +151,13 @@ public:
 	/* for addition: finds the correct place to insert a term*/
 	void insert(int c, int e){
 
+		if (c == 0) return;
+
 		Term* newNode = new Term(c, e);
 		Term* current = head;
 
 		/* search for right exponent */
 		while (current->next){
-
-			if (current->next->exponent > e) current = current->next;
-
-			if (current->next->exponent == e)
-			{
-				current = current->next;
-				*current = *current + *newNode;
-				return;
-			}
 
 			if (current->next->exponent < e)
 			{
@@ -138,6 +165,21 @@ public:
 				current->next = newNode;
 				return;
 			}
+
+			if (current->next->exponent == e)
+			{
+				if (current->next->coefficient + newNode->coefficient == 0)
+				{
+					current->next = current->next->next;
+					return;
+				}
+
+				current = current->next;
+				*current = *current + *newNode;
+				return;
+			} 
+			
+			if (current->next->exponent > e) current = current->next;			
 		}
 
 		if (!current->next)
@@ -145,13 +187,6 @@ public:
 			current->next = newNode;
 			size++;
 		}
-	}
-
-	void delete_node(Term* spot){
-
-		Term* temp = spot->next;
-		spot->next = spot->next->next;
-		delete temp; return;
 	}
 
 	friend ostream& operator<< (ostream& os, Polynomial p);
@@ -180,135 +215,7 @@ ostream& operator<< (ostream& os, Polynomial p){
 	return os;
 }
 
-class Something{
-
-private:
-
-	int degree;
-	string canonical_form;
-	int* coefficients;
-	int* powers;
-
-public:
-
-	Something() :
-		degree(0),
-		canonical_form(NULL),
-		coefficients{ new int[0] }, 
-		powers{ new int[0] }
-	{};
-
-	Something(string equation) :
-		canonical_form(equation)
-	{
-		cout << "Converstion Construction Activated on " << equation << endl;
-
-		int str_length = equation.length()+1;						 
-		char* equation_string = new char[str_length];
-		strcpy_s(equation_string, str_length, equation.c_str());
-
-		coefficients = new int[str_length / 2];
-		powers = new int[str_length / 2];
-
-		int tick = 0, c = 0, p = 0;
-		for (int i = 0; i < str_length; i++){
-
-			if (equation_string[i] == ' '){
-				continue;
-			}
-
-			if (tick % 2 == 0){
-
-				coefficients[c++] = static_cast<int>(equation_string[i]) - 48;
-			}
-
-			if (tick % 2 == 1){
-
-				powers[p++] = static_cast<int>(equation_string[i]) - 48;
-				
-			}
-
-			tick++;
-		}
-
-		for (int i = 0; i < sizeof(coefficients); i++){
-
-			cout << coefficients[i] << "x^" << powers[i] << " ";
-		}
-	};
-
-	Something(const Something& source) :
-		canonical_form(source.canonical_form),
-		coefficients(source.coefficients),
-		powers(source.powers)
-	{
-
-
-	};
-
-	~Something(){
-
-		/*delete[] coefficients;
-		delete[] powers;*/
-	}
-
-	Something operator+(const Something& source){
-
-
-	}
-
-	Something operator-(const Something& source){
-
-
-	}
-
-	Something operator*(const Something& source){
-
-
-	}
-
-	Something operator=(const Something& source){
-
-
-	}
-
-	friend ostream& operator<< (ostream& os, Something p);
-};
-
 int main(){
-
-/*	string filename, first_line, second_line;
-
-	/*cout << "Please enter filename: ";
-	cin >> filename;#1#
-
-	filename = "Text.txt";
-
-	ifstream infile(filename);
-
-	while (!infile.eof()){
-
-		getline(infile, first_line);
-		getline(infile, second_line);
-
-		cout << first_line << endl;
-		cout << second_line << endl;
-		cout << "++++++++++++++++" << endl;
-
-		Something test1 = Something(first_line);
-		cout << test1 << endl;
-		Something test2 = Something(second_line);
-		cout << test2 << endl;
-	}
-
-	cout << "DONE!";*/
-
-/*	Term test1(1, 1);
-	Term test2(1, 1);
-	cout << test1 << endl;
-	cout << test2 << endl;
-	cout << test1 + test2 << endl;
-	cout << test1 * test2 << endl;*/
 
 	Polynomial* test = new Polynomial();
 	(*test).insert(4, 3);
@@ -319,5 +226,8 @@ int main(){
 	(*test).insert(1, 0);
 	(*test).insert(10, 11);
 	cout << *test << endl;
+
+//	Polynomial* test = new Polynomial("1 2 1 3 3 2");
+//	cout << *test << endl;
 	system("pause");
 }
