@@ -126,11 +126,11 @@ public:
 		}
 	}
 
-	Polynomial(const Polynomial& source) 
+/*	Polynomial(const Polynomial& source) 
 	{
 
 
-	}
+	}*/
 
 /*	~Polynomial(){
 
@@ -217,7 +217,7 @@ ostream& operator<< (ostream& os, Polynomial p){
 
 int main(){
 
-	Polynomial* test = new Polynomial();
+/*	Polynomial* test = new Polynomial();
 	(*test).insert(4, 3);
 	(*test).insert(3, 3);
 	(*test).insert(4, 4);
@@ -225,9 +225,9 @@ int main(){
 	(*test).insert(0, 1);
 	(*test).insert(1, 0);
 	(*test).insert(10, 11);
-	cout << *test << endl;
+	cout << *test << endl;*/
 
-//	Polynomial* test = new Polynomial("1 2 1 3 3 2");
-//	cout << *test << endl;
+	Polynomial* test = new Polynomial("1 2 1 3 3 2 5 8 1 7 6 15 4 9 98 1");
+	cout << *test << endl;
 	system("pause");
 }
